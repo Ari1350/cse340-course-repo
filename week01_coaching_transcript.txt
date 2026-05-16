@@ -1,0 +1,62 @@
+Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today.
+
+User: Ariane Arias
+
+Assistant: Great to meet you, Ariane. This is a safe space, and we’ll keep the focus on learning, not on being perfect.
+
+Assistant: Can you open server.js and share the Express route snippet you want to discuss first?
+
+User: app.get('/', (req, res) => {
+    res.render('home', { title: 'Home' });
+});
+
+app.get('/organizations', (req, res) => {
+    res.render('organizations', { title: 'Organizations' });
+});
+
+I use app.get to listen to the URL. I use res.render to show the EJS files and send the title variable to the pages
+
+Assistant: That’s a solid summary, Ariane — you’re describing the core of Express routing and rendering.
+
+Assistant: Can you explain what happens step by step when a user visits /organizations and how Express locates the organizations.ejs template?
+
+User: When a user visits /organizations, this happens:
+Express matches the URL with app.get('/organizations'). Then, Express looks inside the src/views folder because we configured that path with app.set('views', ...). Express finds the file organizations.ejs because we use app.set('view engine', 'ejs'). Finally, it sends the HTML to the user with the title variable
+
+Assistant: I’m checking your project files for a JavaScript function and EJS partials so we can discuss the next topic with real code.
+
+Assistant: That explanation is right on point, Ariane — you’ve captured the request matching, view lookup, and rendering flow clearly.
+
+Assistant: Looking at this snippet:
+
+app.get('/organizations', (req, res) => {
+    res.render('organizations', { title: 'Organizations' });
+});
+
+What do req and res represent, and why did you choose an arrow function here instead of a regular function declaration?
+
+User: req means Request. It has the data from the user or browser
+.res means Response. It is used to send the HTML back to the user.
+I used an arrow function (=>) because it is the modern JavaScript standard (ESM), and it makes the code shorter and cleaner. Also, it is a requirement for my class standards
+
+Assistant: Great, Ariane — that explanation is exactly right.
+
+Assistant: In src/views/organizations.ejs, I see lines like <%- include('partials/header') %> and <%- include('partials/footer') %>. Can you explain why you chose to use EJS partials there and what each partial is responsible for in the page?
+
+User: I used EJS partials because I want to avoid repeating the same code on every page. This follows the DRY principle (Don't Repeat Yourself).partials/header is responsible for the top of the site.
+It has the <!DOCTYPE html>, the <head> with the CSS link, and the navigation menu.partials/footer is responsible for the bottom of the site. It has the copyright text and closes the </body> and </html> tags
+
+Assistant: Nice, Ariane — that’s a good EJS reasoning and a clear use of DRY.
+
+Assistant: Looking at public/css/main.css, you use CSS variables like --primary-green and a responsive @media (max-width: 600px) block. Can you explain why CSS variables are useful here and how the media query helps the site work better on smaller screens?
+
+User: CSS variables are very useful because I can change a color in just one place, and it updates the whole website automatically. It makes the code easy to maintain.The @media (max-width: 600px) query helps on small screens like cell phones. When the screen is small, it changes the navigation menu from a horizontal line to a vertical list. This makes it easier for users to click the links on mobiles.
+
+Assistant: You’ve shown a strong understanding of how routing, EJS rendering, partials, and CSS work together.
+
+Assistant: Is there one part of the project—routing, request/response handling, EJS page structure, or responsive CSS—you’d like to revisit before we wrap up?
+
+User: No, thank you! Everything is very clear to me now. We can wrap up the session.
+Please provide the full transcript as a downloadable .txt file so I can upload it to Canvas.
+
+Assistant: The full transcript has been saved to week01_coaching_transcript.txt in the project folder.
