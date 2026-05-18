@@ -4,6 +4,7 @@ import path from 'path';
 import { testConnection } from './src/models/db.js';
 import { getAllOrganizations } from './src/models/organizations.js';
 import { getAllProjects } from './src/models/projects.js';
+import { getAllCategories } from './src/models/categories.js';
 
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -46,8 +47,17 @@ app.get('/projects', async (req, res) => {
     }
 });
 
-app.get('/categories', (req, res) => {
-    res.render('categories', { title: 'Service Project Categories' });
+app.get('/categories', async (req, res) => {
+    try {
+        const categoriesData = await getAllCategories();
+        res.render('categories', { 
+            title: 'Service Project Categories', 
+            categories: categoriesData 
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error loading categories");
+    }
 });
 
 app.listen(PORT, async() => {

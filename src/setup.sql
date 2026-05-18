@@ -81,3 +81,43 @@ INSERT INTO public.projects (organization_id, title, description, location, date
 (3, 'Food Bank Box Packing', 'Assembling basic food baskets for local neighborhoods.', 'Storage Center', '2026-09-20'),
 (3, 'Vaccination Campaign Support', 'Providing logistical help during the health day.', 'Health Park', '2026-10-10');
 
+CREATE TABLE IF NOT EXISTS public.categories (
+    category_id SERIAL PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.project_categories (
+    project_id INT NOT NULL,
+    category_id INT NOT NULL,
+    PRIMARY KEY (project_id, category_id),
+    CONSTRAINT fk_project FOREIGN KEY (project_id) REFERENCES public.projects(project_id) ON DELETE CASCADE,
+    CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES public.categories(category_id) ON DELETE CASCADE
+);
+
+INSERT INTO public.categories (category_name) VALUES 
+('Environmental'),
+('Educational'),
+('Community Service'),
+('Health & Wellness');
+
+INSERT INTO public.project_categories (project_id, category_id) VALUES
+-- (Asociados a Environmental, ID 1)
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 1),
+(5, 1),
+
+--(Asociados a Educational, ID 2)
+(6, 2),
+(7, 2),
+(8, 2),
+(9, 2),
+(10, 2),
+
+--(Asociados a Community Service, ID 3 y Health & Wellness, ID 4)
+(11, 3),
+(12, 4),
+(13, 3),
+(14, 3),
+(15, 4);
