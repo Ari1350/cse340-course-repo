@@ -1,0 +1,35 @@
+<%- include('partials/header') %>
+
+<main>
+    <h1><%= title %></h1>
+    
+    <% if (organizationDetails) { %>
+        <h2><%= organizationDetails.name %></h2>
+        <p><%= organizationDetails.description %></p>
+        <p><strong>Contact Email:</strong> <a href="mailto:<%= organizationDetails.contact_email %>"><%= organizationDetails.contact_email %></a></p>
+    <% } else { %>
+        <p>No details available for this organization.</p>
+    <% } %>
+
+    <h3>Available Service Projects</h3>
+    <% if (projects && projects.length > 0) { %>
+        <ul>
+            <% projects.forEach(project => { %>
+                <% 
+                    const formattedDate = new Date(project.date).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'
+                    });
+                %>
+                <li>
+                    <strong><%= formattedDate %>:</strong> 
+                    <a href="/project/<%= project.project_id %>"><%= project.title %></a> 
+                    - <%= project.location %>
+                </li>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        <p>No service projects available for this organization at the moment.</p>
+    <% } %>
+</main>
+
+<%- include('partials/footer') %>

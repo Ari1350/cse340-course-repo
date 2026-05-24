@@ -3,12 +3,16 @@
 <main>
     <h1><%= title %></h1>
     <p>Here you will find a list of our partner organizations.</p>
-    <ul>
-        <%organizations.forEach(organization => { %>
-            <li><img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> logo"><strong><%= organization.name %></strong>: <%= organization.contact_email %></li>
+    <ul class="organizations-list">
+        <% organizations.forEach(organization => { %>
+            <li style="display: flex; align-items: center; margin-bottom: 15px; gap: 15px;">
+                <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> logo" style="max-width: 50px; height: auto; border-radius: 4px;">
+                <div>
+                    <strong><%= organization.name %></strong>: <%= organization.contact_email %>
+                </div>
+            </li>
         <% }) %>
-                
-     </ul>
+    </ul>
 </main>
 
 <%- include('partials/footer') %>

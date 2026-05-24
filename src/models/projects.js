@@ -1,6 +1,6 @@
 import pool from './db.js';
 
-export const getAllProjects = async () => {
+const getAllProjects = async () => {
     try {
         const sql = `
             SELECT p.project_id, p.title, p.description, p.location, p.date, o.organization_name 
@@ -15,3 +15,30 @@ export const getAllProjects = async () => {
         throw error;
     }
 };
+
+const getProjectsByOrganizationId = async (organizationId) => {
+    try {
+        const query = `
+            SELECT
+                project_id,
+                organization_id,
+                title,
+                description,
+                location,
+                date
+            FROM public.projects
+            WHERE organization_id = $1
+            ORDER BY date;
+        `;
+        const queryParams = [organizationId];
+        const result = await db.query(query, queryParams);
+
+        return result.rows;
+    } catch (error) {
+        console.error("Error in getProjectsByOrganizationId:", error);
+        throw error;
+    }
+};
+
+export { getAllProjects, getProjectsByOrganizationId };
+
