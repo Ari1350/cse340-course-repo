@@ -2,7 +2,7 @@
 
 <main>
     <h1><%= title %></h1>
-    <p>Explore current service projects available in your area.</p>
+    <p>Explore our upcoming service projects in your community.</p>
 
     <ul>
         <% projects.forEach(project => { %>
@@ -11,12 +11,17 @@
                     year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'
                 });
             %>
-            <li>
-                <strong><%= formattedDate %>:</strong> <%= project.title %> <span class="org-name">( <%= project.organization_name %> )</span>
+            <li style="margin-bottom: 15px; line-height: 1.6;">
+                <strong><%= formattedDate %>:</strong> 
+                <a href="/project/<%= project.project_id %>"><%= project.title %></a> 
+                <span class="org-link">
+                    ( <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a> )
+                </span>
             </li>
         <% }); %>
     </ul>
 </main>
 
 <%- include('partials/footer') %>
+
 
