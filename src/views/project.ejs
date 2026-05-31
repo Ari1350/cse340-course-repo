@@ -18,6 +18,21 @@
         <p><strong>Sponsoring Organization:</strong> 
             <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a>
         </p>
+
+        <div class="project-categories" style="margin-top: 20px;">
+            <strong>Categories:</strong>
+            <% if (categories && categories.length > 0) { %>
+                <div style="display: inline-flex; gap: 10px; margin-left: 5px;">
+                    <% categories.forEach(cat => { %>
+                        <a href="/category/<%= cat.category_id %>" style="background-color: #e2e8f0; color: #4a5568; padding: 4px 10px; border-radius: 15px; font-size: 0.85em; text-decoration: none; font-weight: bold;">
+                            <%= cat.category_name %>
+                        </a>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <span style="color: #a0aec0; font-style: italic;">No categories assigned</span>
+            <% } %>
+        </div>
     <% } else { %>
         <p>Project details could not be found.</p>
     <% } %>

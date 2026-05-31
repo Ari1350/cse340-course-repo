@@ -1,0 +1,31 @@
+<%- include('partials/header') %>
+
+<main>
+    <h1><%= title %></h1>
+    
+    <% if (category) { %>
+        <h2>Category: <%= category.category_name %></h2>
+    <% } %>
+
+    <h3>Service Projects in this Category</h3>
+    <% if (projects && projects.length > 0) { %>
+        <ul>
+            <% projects.forEach(project => { %>
+                <% 
+                    const formattedDate = new Date(project.date).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'
+                    });
+                %>
+                <li style="margin-bottom: 12px;">
+                    <strong><%= formattedDate %>:</strong> 
+                    <a href="/project/<%= project.project_id %>"><%= project.title %></a> 
+                    - <%= project.location %>
+                </li>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        <p>No service projects available for this category at the moment.</p>
+    <% } %>
+</main>
+
+<%- include('partials/footer') %>
