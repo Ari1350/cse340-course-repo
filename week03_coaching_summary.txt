@@ -1,0 +1,26 @@
+Week 03 Coaching Summary
+
+1. Models
+- Example: `src/models/projects.js`
+- Non-trivial function: `getProjectDetails(id)`
+- What it does: retrieves a single project record plus its sponsoring organization using a JOIN.
+- Why it uses parameterized SQL: `WHERE p.project_id = $1` with `[id]` prevents SQL injection and keeps user input safe.
+
+2. Views
+- Example: `src/views/projects.ejs`
+- EJS snippet inserts dynamic data into HTML links and text.
+- What it does: renders `project.project_id`, `project.title`, and `project.organization_id` into RESTful links like `/project/:id` and `/organization/:id`.
+- Why this approach: clean URLs, user-friendly navigation, and matches route parameters in controllers.
+
+3. Controllers
+- Example: `src/controllers/projects.js`
+- Route handler: `showProjectDetailsPage(req, res)` handles `req.params.id`.
+- What it does: reads the route parameter, fetches project data, and renders either the project page or a 404 page.
+- Why this is important: controllers bridge route parameters with model queries and view rendering.
+
+4. Error handling
+- Examples: `server.js` global error middleware and controller-level 404 handling.
+- Strategy: controller explicitly returns 404 for missing database records, while global middleware handles unmatched routes and unexpected server errors.
+- Why this is useful: controlled user experience for missing resources, plus centralized handling for generic failures.
+
+Key takeaway: explicit route parameter handling, parameterized model queries, dynamic EJS rendering, and a layered error strategy all work together to make the app safer, easier to navigate, and more robust.

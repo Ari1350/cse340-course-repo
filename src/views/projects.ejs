@@ -11,11 +11,11 @@
                     year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'
                 });
             %>
-            <li style="margin-bottom: 15px; line-height: 1.6;">
+            <li style="margin-bottom: 15px; line-height: 1.6; font-size: 1.05em;">
                 <strong><%= formattedDate %>:</strong> 
-                <a href="/project/<%= project.project_id %>"><%= project.title %></a> 
+                <a href="/project/<%= project.project_id %>" style="font-weight: bold;"><%= project.title %></a> 
                 <span class="org-link">
-                    ( <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a> )
+                    ( <a href="/organization/<%= project.organization_id %>" style="font-style: italic;"><%= project.organization_name %></a> )
                 </span>
             </li>
         <% }); %>
@@ -23,5 +23,3 @@
 </main>
 
 <%- include('partials/footer') %>
-
-

@@ -1,0 +1,111 @@
+Assistant: Reviewing the repo structure to identify model, view, controller, and error-handling code for our coaching discussion.
+
+Assistant: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake."  
+
+Assistant: I can reference your repo files directly in this editor, and I’ll cite the file and line numbers as we discuss your code.  
+
+Assistant: What name should I use to address you during our session?
+
+User: Ariane
+
+Assistant: Great, Ariane — thanks for sharing your name.
+
+Assistant: I’m looking at `src/models/projects.js`, specifically this function:
+
+```js
+const getProjectDetails = async (id) => {
+    try {
+        const sql = `
+            SELECT 
+                p.project_id, 
+                p.title, 
+                p.description, 
+                p.date, 
+                p.location, 
+                p.organization_id, 
+                o.organization_name
+            FROM public.projects p
+            JOIN public.organizations o ON p.organization_id = o.organization_id
+            WHERE p.project_id = $1;
+        `;
+        const result = await db.query(sql, [id]);
+        return result.rows.length > 0 ? result.rows[0] : null;
+    } catch (error) {
+        console.error("Error in getProjectDetails model:", error);
+        throw error;
+    }
+};
+```
+
+What does this model function do, and why did you choose to pass `id` as a query parameter (`$1`) instead of inserting it directly into the SQL string?
+
+User: This function retrieves all the details of a single service project from the database, including the sponsoring organization's name using a JOIN.I used the $1 placeholder as a parameterized query to protect the application from SQL injection attacks. Inserting the variable directly into the string is dangerous because malicious users could execute unauthorized database commands.
+
+Assistant: Excellent, Ariane — that’s a strong answer and shows you understand why parameterized queries are important.
+
+Assistant: I’m looking at your view in `src/views/projects.ejs`:
+
+```ejs
+<li style="margin-bottom: 15px; line-height: 1.6;">
+    <strong><%= formattedDate %>:</strong> 
+    <a href="/project/<%= project.project_id %>"><%= project.title %></a> 
+    <span class="org-link">
+        ( <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a> )
+    </span>
+</li>
+```
+
+How does this EJS snippet work to insert data into the rendered links, and why did you choose to build the project and organization links this way?
+
+User: This snippet uses the <%= ... %> tags to safely insert dynamic data like the IDs, dates, and names into the HTML. The server replaces these tags with real values before sending the page to the user. I built the links this way because it matches our RESTful route parameters (/project/:id and /organization/:id). It creates clean, user-friendly URLs and allows users to easily click between a project and its sponsoring organization.
+
+Assistant: I’m checking your controller and error-handling setup so we can discuss the route parameter and the 404/500 strategy precisely.
+
+Assistant: I’m looking at this controller snippet from `src/controllers/projects.js`:
+
+```js
+const showProjectDetailsPage = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const project = await getProjectDetails(projectId);
+
+        if (!project) {
+            return res.status(404).render('errors/404', { title: 'Page Not Found' });
+        }
+
+        const title = 'Project Details';
+        res.render('project', { title, project });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error loading project details");
+    }
+};
+```
+
+and this global error handler from `server.js`:
+
+```js
+app.use((req, res, next) => {
+    const err = new Error('Page Not Found');
+    err.status = 404;
+    next(err);
+});
+
+app.use((err, req, res, next) => {
+    console.error('Error occurred:', err.message);
+
+    const status = err.status || 500;
+    const template = status === 404 ? '404' : '500';
+
+    res.status(status).render(`errors/${template}`, {
+        title: status === 404 ? 'Page Not Found' : 'Server Error',
+        error: err.message,
+        stack: err.stack,
+        NODE_ENV
+    });
+});
+```
+
+How do you see the route parameter handling in `showProjectDetailsPage` working together with your 404/500 middleware, and why did you choose to explicitly render a 404 inside the controller instead of letting the global handler do it?
+
+User: The route parameter req.params.id captures the ID from the URL. If that ID does not exist in the database, the controller returns a 404 status right away because the route matched, but the data is missing. I chose to explicitly render the 404 inside the controller to give an immediate and controlled response for missing items. The global error handler is great for generic errors or unexpected server crashes (500), but checking the database results in the controller allows me to guide the user to the 'Page Not Found' template faster and cleaner.
