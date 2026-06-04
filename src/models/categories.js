@@ -99,4 +99,44 @@ const updateCategoryAssignments = async (projectId, categoryIds) => {
     }
 };
 
-export { getAllCategories, getCategoryDetails, getCategoriesByProjectId, getProjectsByCategoryId, updateCategoryAssignments };
+// Creates a new category in the database (W04 Project)
+const createCategory = async (categoryName) => {
+    try {
+        const sql = `
+            INSERT INTO public.categories (category_name)
+            VALUES ($1)
+            RETURNING category_id;
+        `;
+        const result = await db.query(sql, [categoryName]);
+        if (result.rows.length === 0) {
+            throw new Error('Failed to create category');
+        }
+        return result.rows[0].category_id;
+    } catch (error) {
+        console.error("Error in createCategory model:", error);
+        throw error;
+    }
+};
+
+// Updates an existing category name in the database (W04 Project)
+const updateCategory = async (categoryId, categoryName) => {
+    try {
+        const sql = `
+            UPDATE public.categories
+            SET category_name = $1
+            WHERE category_id = $2
+            RETURNING category_id;
+        `;
+        const result = await db.query(sql, [categoryName, categoryId]);
+        if (result.rows.length === 0) {
+            throw new Error('Category not found or failed to update');
+        }
+        return result.rows[0].category_id;
+    } catch (error) {
+        console.error("Error in updateCategory model:", error);
+        throw error;
+    }
+};
+
+
+export { getAllCategories, getCategoryDetails, getCategoriesByProjectId, getProjectsByCategoryId, updateCategoryAssignments, createCategory, updateCategory };

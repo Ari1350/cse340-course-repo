@@ -1,15 +1,23 @@
 <%- include('partials/header') %>
 
-<main>
+<main style="max-width: 600px; margin: 0 auto; padding: 20px;">
     <h1><%= title %></h1>
     <p>Explore our service projects by category:</p>
-    <ul>
+    
+    <ul style="padding-left: 20px;">
         <% categories.forEach(category => { %>
-            <li style="margin-bottom: 10px;">
-                <a href="/category/<%= category.category_id %>" style="font-weight: bold;"><%= category.category_name %></a>
+            <li style="margin-bottom: 12px; font-size: 1.1em;">
+                <a href="/category/<%= category.category_id %>" style="font-weight: bold; text-decoration: none; color: #1e3a8a;"><%= category.category_name %></a>
+                <a href="/edit-category/<%= category.category_id %>" style="margin-left: 15px; font-size: 0.8em; color: #f59e0b; text-decoration: none;">✏ Edit</a>
             </li>
         <% }); %>
     </ul>
+
+    <p style="margin-top: 30px;">
+        <a href="/new-category" style="background-color: #3b82f6; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;">
+            + Add a New Category
+        </a>
+    </p>
 </main>
 
 <%- include('partials/footer') %>
