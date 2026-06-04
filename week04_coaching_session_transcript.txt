@@ -1,0 +1,25 @@
+Assistant: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today.
+
+I’m your learning coach and software mentor, and I can reference your files directly here in the editor. I see src/routes.js and src/controllers/projects.js handling project form submission. Can you walk me through how the POST route and controller take data from req.body and use it to create or update a project?
+
+User: When a user submits the form, Express sends a POST request, and the router directs it to the controller. The controller extracts the form data from req.body, such as the title, description, location, date, and organizationId.Then, the controller passes these variables as parameters to our model functions (createProject or updateProject). The model uses a parameterized SQL query to save the changes into the database. Finally, the controller sets a success flash message and redirects the user back to the project details page
+
+Assistant: I like that explanation—it's a solid flow from request to persistence.
+
+In src/views/edit-project.ejs, I see you pre-fill the inputs with <%= project.title %>, <%= project.description %>, and an isoDate value for the date field. How did you decide to pre-fill the edit form this way, and what problems does that solve for the user during editing?
+
+User: I decided to pre-fill the form fields with existing data from the database so that users can easily see the information currently saved. This approach addresses a significant usability issue, allowing users to avoid retyping everything from scratch; they only need to modify the specific fields they want to change. Additionally, formatting the date as an ISO string (YYYY-MM-DD) is essential because HTML5 calendar inputs require this exact format to display the pre-saved date correctly in the browser interface.
+
+Assistant: Great reasoning—pre-filling the edit form is exactly the right usability choice, and your date formatting is correct for <input type="date">.
+
+I see src/middleware/flash.js stores messages on req.session.flash and src/views/partials/header.ejs renders them after redirect. Can you explain how the session keeps flash messages alive across the redirect and why that pattern is helpful in your app?
+
+User: The session uses a browser cookie to remember data on the server even after a redirect. This is helpful because HTTP forgets everything between pages. The session allows us to save a success message, show it once on the next page, and delete it immediately so it doesn't repeat if the user refreshes
+
+Assistant: Good—your flash explanation is exactly right, and it shows you understand the redirect lifecycle.
+
+I can see the server-side validation logic in src/controllers/organizations.js and src/controllers/categories.js where you define body(...) rules and then call validationResult(req).
+
+Can you explain why that server-side validation is still needed even with browser-side form constraints, and how your controller handles the case when validation fails?
+
+User: Server-side validation is still needed because anyone can bypass browser rules by disabling JavaScript or using tools like Postman. If validation fails, validationResult(req) catches the errors, the controller loops through them to create flash messages, and returns a redirect to the form so the user can fix the input
