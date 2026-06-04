@@ -11,6 +11,15 @@
         <p>No details available for this organization.</p>
     <% } %>
 
+    <!-- Enlace corregido para ir a Editar Organización (W04) -->
+    <p style="margin-top: 20px; margin-bottom: 20px;">
+        <a href="/edit-organization/<%= organizationDetails.organization_id %>" style="background-color: #f59e0b; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.95em; display: inline-block;">
+            ✏ Edit Organization
+        </a>
+    </p>
+
+
+
     <h3>Available Service Projects</h3>
     <% if (projects && projects.length > 0) { %>
         <ul>

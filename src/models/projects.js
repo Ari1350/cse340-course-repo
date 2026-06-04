@@ -86,5 +86,25 @@ const getProjectsByOrganizationId = async (organizationId) => {
     }
 };
 
+// Creates a new project in the database (W04)
+const createProject = async (title, description, location, date, organizationId) => {
+    try {
+        const query = `
+            INSERT INTO public.projects (title, description, location, date, organization_id)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING project_id;
+        `;
+        const queryParams = [title, description, location, date, organizationId];
+        const result = await db.query(query, queryParams);
 
-export { getAllProjects, getUpcomingProjects, getProjectDetails, getProjectsByOrganizationId };
+        if (result.rows.length === 0) {
+            throw new Error('Failed to create project');
+        }
+        return result.rows[0].project_id;
+    } catch (error) {
+        console.error('Error in createProject model:', error);
+        throw error;
+    }
+};
+
+export { getAllProjects, getUpcomingProjects, getProjectDetails, getProjectsByOrganizationId, createProject };

@@ -1,0 +1,43 @@
+<%- include('partials/header') %>
+
+<main style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h1><%= title %></h1>
+
+    <form action="/new-project" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 5px;">
+            <label for="title" style="font-weight: bold;">Project Title</label>
+            <input type="text" id="title" name="title" maxlength="150" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;" />
+        </div>
+
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 5px;">
+            <label for="description" style="font-weight: bold;">Description</label>
+            <textarea id="description" name="description" rows="4" maxlength="500" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;"></textarea>
+        </div>
+
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 5px;">
+            <label for="location" style="font-weight: bold;">Location</label>
+            <input type="text" id="location" name="location" maxlength="255" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;" />
+        </div>
+
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 5px;">
+            <label for="date" style="font-weight: bold;">Date</label>
+            <input type="date" id="date" name="date" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;" />
+        </div>
+
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 5px;">
+            <label for="organizationId" style="font-weight: bold;">Sponsoring Organization</label>
+            <select id="organizationId" name="organizationId" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: white;">
+                <option value="">Select an organization</option>
+                <% organizations.forEach(org => { %>
+                    <option value="<%= org.organization_id %>"><%= org.name %></option>
+                <% }); %>
+            </select>
+        </div>
+
+        <button type="submit" style="background-color: #10b981; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer;">
+            Create Project
+        </button>
+    </form>
+</main>
+
+<%- include('partials/footer') %>

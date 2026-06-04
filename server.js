@@ -2,20 +2,32 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import router from './src/routes.js';
+import session from 'express-session';
+import flash from './src/middleware/flash.js';
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'development';
 const PORT = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+  // Set up session middleware
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 const app = express();
-
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.set('view engine', 'ejs');
-
 app.set('views', path.join(__dirname, 'src/views'));
+
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60 * 60 * 1000 } 
+}));
+
+app.use(flash);
 
 // Middleware to log requests
 app.use((req, res, next) => {

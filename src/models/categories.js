@@ -64,4 +64,39 @@ const getProjectsByCategoryId = async (categoryId) => {
     }
 };
 
-export { getAllCategories, getCategoryDetails, getCategoriesByProjectId, getProjectsByCategoryId };
+const assignCategoryToProject = async (categoryId, projectId) => {
+    try {
+        const query = `
+            INSERT INTO public.project_categories (category_id, project_id)
+            VALUES ($1, $2);
+        `;
+        await db.query(query, [categoryId, projectId]);
+    } catch (error) {
+        console.error("Error in assignCategoryToProject model:", error);
+        throw error;
+    }
+};
+
+// Updates all category assignments for a single project (W04)
+const updateCategoryAssignments = async (projectId, categoryIds) => {
+    try {
+        const deleteQuery = `
+            DELETE FROM public.project_categories
+            WHERE project_id = $1;
+        `;
+        await db.query(deleteQuery, [projectId]);
+
+        if (categoryIds && categoryIds.length > 0) {
+            for (const categoryId of categoryIds) {
+                if (categoryId) {
+                    await assignCategoryToProject(categoryId, projectId);
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Error in updateCategoryAssignments model:", error);
+        throw error;
+    }
+};
+
+export { getAllCategories, getCategoryDetails, getCategoriesByProjectId, getProjectsByCategoryId, updateCategoryAssignments };

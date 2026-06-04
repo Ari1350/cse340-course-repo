@@ -1,0 +1,28 @@
+<%- include('partials/header') %>
+
+<main style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h1><%= title %></h1>
+
+    <form action="/new-organization" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 5px;">
+            <label for="name" style="font-weight: bold;">Organization Name</label>
+            <input type="text" id="name" name="name" required maxlength="150" style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;" />
+        </div>
+
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 5px;">
+            <label for="description" style="font-weight: bold;">Description</label>
+            <textarea id="description" name="description" rows="4" required maxlength="500" style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;"></textarea>
+        </div>
+
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 5px;">
+            <label for="contactEmail" style="font-weight: bold;">Contact Email</label>
+            <input type="email" id="contactEmail" name="contactEmail" required style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;" />
+        </div>
+
+        <button type="submit" style="background-color: #10b981; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer;">
+            Create Organization
+        </button>
+    </form>
+</main>
+
+<%- include('partials/footer') %>

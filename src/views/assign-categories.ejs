@@ -1,0 +1,37 @@
+<%- include('partials/header') %>
+
+<main style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h1><%= projectDetails.title %></h1>
+    <h2>Assign Categories</h2>
+
+    <form action="/assign-categories/<%= projectId %>" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+        <div class="form-group" style="background-color: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0;">
+            <p style="margin-top: 0; font-weight: bold; color: #475569;">Select all categories that apply:</p>
+            
+            <% categories.forEach(category => { %>
+                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                    <input 
+                        type="checkbox" 
+                        id="category_<%= category.category_id %>" 
+                        name="categoryIds" 
+                        value="<%= category.category_id %>"
+                        <%= assignedIds.includes(category.category_id) ? 'checked' : '' %>
+                        style="width: 18px; height: 18px; cursor: pointer;"
+                    />
+                    <label for="category_<%= category.category_id %>" style="cursor: pointer; font-size: 1.05em;">
+                        <%= category.category_name %>
+                    </label>
+                </div>
+            <% }); %>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button type="submit" style="background-color: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;">
+                Save Assignments
+            </button>
+            <a href="/project/<%= projectId %>" style="color: #64748b; text-decoration: none; font-size: 0.95em;">Cancel</a>
+        </div>
+    </form>
+</main>
+
+<%- include('partials/footer') %>

@@ -33,6 +33,14 @@
                 <span style="color: #a0aec0; font-style: italic;">No categories assigned</span>
             <% } %>
         </div>
+
+        <!-- Enlace para editar y asignar categorías (W04) -->
+        <p style="margin-top: 20px;">
+            <a href="/assign-categories/<%= project.project_id %>" style="background-color: #4b5563; color: white; padding: 5px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85em; font-weight: bold;">
+                ⚙ Edit Categories
+            </a>
+        </p>
+
     <% } else { %>
         <p>Project details could not be found.</p>
     <% } %>
