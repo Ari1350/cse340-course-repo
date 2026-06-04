@@ -1,4 +1,4 @@
-import { getUpcomingProjects, getProjectDetails, createProject } from '../models/projects.js';
+import { getUpcomingProjects, getProjectDetails, createProject, updateProject } from '../models/projects.js';
 import { getAllOrganizations } from '../models/organizations.js'; 
 import { getCategoriesByProjectId } from '../models/categories.js';
 
@@ -61,5 +61,43 @@ const processNewProjectForm = async (req, res) => {
     }
 };
 
+// Controller to show the edit project form with pre-filled data (GET)
+const showEditProjectForm = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const project = await getProjectDetails(projectId);
 
-export { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm };
+        if (!project) {
+            return res.status(404).render('errors/404', { title: 'Project Not Found' });
+        }
+
+        // Recuperamos todas las organizaciones para la lista desplegable
+        const organizations = await getAllOrganizations();
+        const title = 'Edit Service Project';
+
+        res.render('edit-project', { title, project, organizations });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error loading edit project form");
+    }
+};
+
+// Controller to process the project update submission (POST)
+const processEditProjectForm = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const { title, description, location, date, organizationId } = req.body;
+
+        await updateProject(projectId, title, description, location, date, organizationId);
+
+        req.flash('success', 'Service project updated successfully!');
+        res.redirect(`/project/${projectId}`);
+    } catch (error) {
+        console.error(error);
+        req.flash('error', 'There was an error updating the service project.');
+        res.redirect(`/edit-project/${req.params.id}`);
+    }
+};
+
+
+export { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, showEditProjectForm, processEditProjectForm };
