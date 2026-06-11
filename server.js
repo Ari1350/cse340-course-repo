@@ -39,7 +39,15 @@ app.use((req, res, next) => {
 
 
 app.use((req, res, next) => {
-    res.locals.NODE_ENV = NODE_ENV;
+    res.locals.isLoggedIn = false;
+    res.locals.userRole = null; // Variable nueva para guardar el rol
+
+    if (req.session && req.session.user) {
+        res.locals.isLoggedIn = true;
+        res.locals.userRole = req.session.user.role_name; // Capturamos 'user' o 'admin'
+    }
+
+    res.locals.NODE_ENV = typeof NODE_ENV !== 'undefined' ? NODE_ENV : 'development';
     next();
 });
 

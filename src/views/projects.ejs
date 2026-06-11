@@ -22,10 +22,12 @@
     </ul>
 </main>
 
-<p style="margin-top: 30px;">
-    <a href="/new-project" style="background-color: #3b82f6; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;">
-        + Add a New Service Project
-    </a>
-</p>
+<% if (userRole === 'admin') { %>
+       <p style="margin-top: 30px;">
+           <a href="/new-project" style="background-color: #3b82f6; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;">
+               + Add a New Service Project
+           </a>
+       </p>
+   <% } %>
 
 <%- include('partials/footer') %>
