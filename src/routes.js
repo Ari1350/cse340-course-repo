@@ -6,7 +6,7 @@ import { showOrganizationsPage, showOrganizationDetailsPage, showNewOrganization
 import { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, showEditProjectForm, processEditProjectForm } from './controllers/projects.js';
 import { showCategoriesPage, showCategoryDetailsPage, showNewCategoryForm, handleCreateCategory, showEditCategoryForm, processEditCategoryForm, showAssignCategoriesForm, processAssignCategoriesForm, categoryValidation } from './controllers/categories.js';
 import { testErrorPage } from './controllers/errors.js';
-import { showUserRegistrationForm, processUserRegistrationForm, showLoginForm, processLoginForm, processLogout, requireLogin, showDashboard, requireRole } from './controllers/users.js';
+import { showUserRegistrationForm, processUserRegistrationForm, showLoginForm, processLoginForm, processLogout, requireLogin, showDashboard, requireRole, showUsersPage } from './controllers/users.js';
 
 
 const router = express.Router();
@@ -57,5 +57,7 @@ router.get('/dashboard', requireLogin, showDashboard);
 // Error-handling test route
 router.get('/test-error', testErrorPage);
 
+// Admin User Directory Route (W05 Project)
+router.get('/users', requireLogin, requireRole('admin'), showUsersPage);
 
 export default router;

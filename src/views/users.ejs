@@ -1,0 +1,34 @@
+<%- include('partials/header') %>
+
+<main style="max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+    <h1 style="color: #1e3a8a; margin-bottom: 20px;"><%= title %></h1>
+    <p style="color: #475569; margin-bottom: 20px;">Directory of all registered accounts inside the database system.</p>
+
+    <table style="width: 100%; border-collapse: collapse; background-color: white; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden;">
+        <thead>
+            <tr style="background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1; text-align: left;">
+                <th style="padding: 12px; color: #334155;">User ID</th>
+                <th style="padding: 12px; color: #334155;">Name</th>
+                <th style="padding: 12px; color: #334155;">Email (Username)</th>
+                <th style="padding: 12px; color: #334155;">System Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% users.forEach(user => { %>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 12px; color: #64748b;"><%= user.user_id %></td>
+                    <td style="padding: 12px; font-weight: bold; color: #334155;"><%= user.name %></td>
+                    <td style="padding: 12px; color: #475569;"><%= user.email %></td>
+                    <td style="padding: 12px;">
+                        <span style="padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: bold; background-color: #e2e8f0; color: #1e293b;">
+                            <%= user.role_name %>
+                        </span>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</main>
+
+<%- include('partials/footer') %>
+

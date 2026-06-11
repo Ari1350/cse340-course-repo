@@ -73,4 +73,21 @@ const authenticateUser = async (email, password) => {
     }
 };
 
-export { createUser, authenticateUser };
+// Retrieves all registered users with their associated role name (W05 Project)
+const getAllUsersWithRoles = async () => {
+    try {
+        const query = `
+            SELECT u.user_id, u.name, u.email, r.role_name 
+            FROM public.users u
+            JOIN public.roles r ON u.role_id = r.role_id
+            ORDER BY u.name ASC;
+        `;
+        const result = await db.query(query);
+        return result.rows;
+    } catch (error) {
+        console.error('Error in getAllUsersWithRoles model:', error);
+        throw error;
+    }
+};
+
+export { createUser, authenticateUser, getAllUsersWithRoles };

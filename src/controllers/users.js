@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { createUser, authenticateUser } from '../models/users.js';
+import { createUser, authenticateUser, getAllUsersWithRoles } from '../models/users.js';
 
 // 1. Middleware de Seguridad: Protege rutas contra usuarios no autenticados 
 const requireLogin = (req, res, next) => {
@@ -103,6 +103,17 @@ const requireRole = (role) => {
     };
 };
 
+// Controller to render the users management page for admins (GET - W05 Project)
+const showUsersPage = async (req, res) => {
+    try {
+        const users = await getAllUsersWithRoles();
+        const title = 'User Management';
+        res.render('users', { title, users });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error loading user management directory");
+    }
+};
 
 export { 
     showUserRegistrationForm, 
@@ -112,7 +123,7 @@ export {
     processLogout,
     requireLogin,   
     showDashboard,
-    requireRole
-    
+    requireRole,
+    showUsersPage
     
 };
