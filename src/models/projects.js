@@ -133,5 +133,67 @@ const updateProject = async (projectId, title, description, location, date, orga
     }
 };
 
+// Check if a specific user is already volunteered for a project (W06)
+const isUserVolunteered = async (userId, projectId) => {
+    try {
+        const query = 'SELECT 1 FROM public.project_volunteers WHERE user_id = $1 AND project_id = $2;';
+        const result = await db.query(query, [userId, projectId]);
+        return result.rows.length > 0;
+    } catch (error) {
+        console.error('Error in isUserVolunteered model:', error);
+        throw error;
+    }
+};
 
-export { getAllProjects, getUpcomingProjects, getProjectDetails, getProjectsByOrganizationId, createProject, updateProject };
+// Add a user registration to a service project (W06)
+const addVolunteer = async (userId, projectId) => {
+    try {
+        const query = 'INSERT INTO public.project_volunteers (user_id, project_id) VALUES ($1, $2) ON CONFLICT DO NOTHING;';
+        return await db.query(query, [userId, projectId]);
+    } catch (error) {
+        console.error('Error in addVolunteer model:', error);
+        throw error;
+    }
+};
+
+// Remove a user registration from a service project (W06)
+const removeVolunteer = async (userId, projectId) => {
+    try {
+        const query = 'DELETE FROM public.project_volunteers WHERE user_id = $1 AND project_id = $2;';
+        return await db.query(query, [userId, projectId]);
+    } catch (error) {
+        console.error('Error in removeVolunteer model:', error);
+        throw error;
+    }
+};
+
+// Retrieve all projects a specific user has volunteered for 
+const getProjectsByUserVolunteer = async (userId) => {
+    try {
+        const query = `
+            SELECT p.project_id, p.title, p.description 
+            FROM public.projects p
+            JOIN public.project_volunteers pv ON p.project_id = pv.project_id
+            WHERE pv.user_id = $1
+            ORDER BY p.title ASC;
+        `;
+        const result = await db.query(query, [userId]);
+        return result.rows;
+    } catch (error) {
+        console.error('Error in getProjectsByUserVolunteer model:', error);
+        throw error;
+    }
+};
+
+export { 
+    getAllProjects, 
+    getUpcomingProjects,
+    getProjectDetails, 
+    getProjectsByOrganizationId,
+    createProject, 
+    updateProject,
+    isUserVolunteered,
+    addVolunteer,
+    removeVolunteer,
+    getProjectsByUserVolunteer
+};

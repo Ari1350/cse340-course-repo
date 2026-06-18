@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 import { createUser, authenticateUser, getAllUsersWithRoles } from '../models/users.js';
+import { getProjectsByUserVolunteer } from '../models/projects.js';
+
 
 // 1. Middleware de Seguridad: Protege rutas contra usuarios no autenticados 
 const requireLogin = (req, res, next) => {
@@ -73,15 +75,24 @@ const processLogout = async (req, res) => {
     res.redirect('/login');
 };
 
-// 7. Render private dashboard profile view (GET - NEW)
-const showDashboard = (req, res) => {
-    const user = req.session.user;
-    res.render('dashboard', { 
-        title: 'Dashboard',
-        name: user.name,
-        email: user.email
-    });
+// Display secure user dashboard with volunteer listings (GET - W06)
+const showDashboard = async (req, res) => {
+    try {
+        const userId = req.session.user.user_id;
+        const volunteeredProjects = await getProjectsByUserVolunteer(userId);
+        
+        const title = 'My Dashboard';
+        res.render('dashboard', { 
+            title, 
+            user: req.session.user,
+            volunteeredProjects 
+        });
+    } catch (error) {
+        console.error('Error rendering dashboard:', error);
+        res.status(500).send("Secure directory loading error");
+    }
 };
+
 
 // Middleware factory to require a specific role for route access (W05 Team Activity)
 const requireRole = (role) => {

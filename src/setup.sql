@@ -142,3 +142,13 @@ CREATE TABLE IF NOT EXISTS public.users (
     role_id INTEGER REFERENCES public.roles(role_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Create project_volunteers join table 
+CREATE TABLE IF NOT EXISTS public.project_volunteers (
+    user_id INT NOT NULL,
+    project_id INT NOT NULL,
+    joined_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, project_id),
+    CONSTRAINT fk_volunteer_user FOREIGN KEY (user_id) REFERENCES public.users (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_volunteer_project FOREIGN KEY (project_id) REFERENCES public.projects (project_id) ON DELETE CASCADE
+);

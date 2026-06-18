@@ -51,6 +51,33 @@
     <% } else { %>
         <p>Project details could not be found.</p>
     <% } %>
+
+        <!-- VOLUNTEER INTERACTIVE COMPONENT (W06) -->
+    <div style="margin-top: 30px; padding: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+        <% if (isLoggedIn) { %>
+            <% if (isVolunteered) { %>
+                <p style="color: #16a34a; font-weight: bold; font-size: 1.1em; margin-bottom: 10px;">
+                    ✅ You are volunteering for this project!
+                </p>
+                <form action="/project/<%= project.project_id %>/unvolunteer" method="POST">
+                    <button type="submit" style="background-color: #dc2626; color: white; padding: 8px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
+                        ❌ Cancel My Volunteer Registration
+                    </button>
+                </form>
+            <% } else { %>
+                <p style="color: #475569; margin-bottom: 15px;">Would you like to support this service initiative?</p>
+                <form action="/project/<%= project.project_id %>/volunteer" method="POST">
+                    <button type="submit" style="background-color: #16a34a; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 1em;">
+                        🙋‍♂️ Volunteer for this Project
+                    </button>
+                </form>
+            <% } %>
+        <% } else { %>
+            <p style="color: #64748b; margin: 0; font-style: italic;">
+                Please <a href="/login" style="color: #2563eb; font-weight: bold; text-decoration: none;">Log In</a> to register as a volunteer for this project.
+            </p>
+        <% } %>
+    </div>
 </main>
 
 <%- include('partials/footer') %>

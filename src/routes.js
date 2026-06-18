@@ -3,7 +3,7 @@ import express from 'express';
 // Import all controllers
 import { showHomePage } from './controllers/index.js';
 import { showOrganizationsPage, showOrganizationDetailsPage, showNewOrganizationForm, handleCreateOrganization, organizationValidation, showEditOrganizationForm, processEditOrganizationForm } from './controllers/organizations.js';
-import { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, showEditProjectForm, processEditProjectForm } from './controllers/projects.js';
+import { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, showEditProjectForm, processEditProjectForm, handleAddVolunteer, handleRemoveVolunteer } from './controllers/projects.js';
 import { showCategoriesPage, showCategoryDetailsPage, showNewCategoryForm, handleCreateCategory, showEditCategoryForm, processEditCategoryForm, showAssignCategoriesForm, processAssignCategoriesForm, categoryValidation } from './controllers/categories.js';
 import { testErrorPage } from './controllers/errors.js';
 import { showUserRegistrationForm, processUserRegistrationForm, showLoginForm, processLoginForm, processLogout, requireLogin, showDashboard, requireRole, showUsersPage } from './controllers/users.js';
@@ -59,5 +59,10 @@ router.get('/test-error', testErrorPage);
 
 // Admin User Directory Route (W05 Project)
 router.get('/users', requireLogin, requireRole('admin'), showUsersPage);
+
+// Volunteer management routes protected (W06)
+router.post('/project/:id/volunteer', requireLogin, handleAddVolunteer);
+router.post('/project/:id/unvolunteer', requireLogin, handleRemoveVolunteer);
+
 
 export default router;

@@ -1,0 +1,47 @@
+Assistant: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today.
+
+I’m your learning coach and software mentor, and I can reference your files directly here in the editor. I see src/routes.js and src/controllers/projects.js handling project form submission. Can you walk me through how the POST route and controller take data from req.body and use it to create or update a project?
+
+User: When a user submits the form, Express sends a POST request, and the router directs it to the controller. The controller extracts the form data from req.body, such as the title, description, location, date, and organizationId.Then, the controller passes these variables as parameters to our model functions (createProject or updateProject). The model uses a parameterized SQL query to save the changes into the database. Finally, the controller sets a success flash message and redirects the user back to the project details page
+
+Assistant: I like that explanation—it's a solid flow from request to persistence.
+
+In src/views/edit-project.ejs, I see you pre-fill the inputs with <%= project.title %>, <%= project.description %>, and an isoDate value for the date field. How did you decide to pre-fill the edit form this way, and what problems does that solve for the user during editing?
+
+User: I decided to pre-fill the form fields with existing data from the database so that users can easily see the information currently saved. This approach addresses a significant usability issue, allowing users to avoid retyping everything from scratch; they only need to modify the specific fields they want to change. Additionally, formatting the date as an ISO string (YYYY-MM-DD) is essential because HTML5 calendar inputs require this exact format to display the pre-saved date correctly in the browser interface.
+
+Assistant: Great reasoning—pre-filling the edit form is exactly the right usability choice, and your date formatting is correct for <input type="date">.
+
+I see src/middleware/flash.js stores messages on req.session.flash and src/views/partials/header.ejs renders them after redirect. Can you explain how the session keeps flash messages alive across the redirect and why that pattern is helpful in your app?
+
+User: The session uses a browser cookie to remember data on the server even after a redirect. This is helpful because HTTP forgets everything between pages. The session allows us to save a success message, show it once on the next page, and delete it immediately so it doesn't repeat if the user refreshes
+
+Assistant: Good—your flash explanation is exactly right, and it shows you understand the redirect lifecycle.
+
+I can see the server-side validation logic in src/controllers/organizations.js and src/controllers/categories.js where you define body(...) rules and then call validationResult(req).
+
+Can you explain why that server-side validation is still needed even with browser-side form constraints, and how your controller handles the case when validation fails?
+
+User: Server-side validation is still needed because anyone can bypass browser rules by disabling JavaScript or using tools like Postman. If validation fails, validationResult(req) catches the errors, the controller loops through them to create flash messages, and returns a redirect to the form so the user can fix the input
+
+Assistant: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today.
+
+Can you please tell me your name?
+
+User: ariane
+
+Assistant: Great, Ariane — this is a safe learning space and mistakes are welcome. In src/controllers/users.js and src/models/users.js, how did you implement password hashing for registration, and why did you choose that approach?
+
+User: I used the bcrypt library to secure user passwords. In the registration controller, I generated a secure salt and hashed the plain-text password using await bcrypt.hash(password, salt).Then I sent only the secure password_hash string to the database model for storage. I chose this approach because hashing is a one-way process. It protects user data because even if the database is compromised, the real passwords remain unreadable.
+
+Assistant: Nice work, Ariane — that hashing approach is exactly the right idea. Looking at src/controllers/users.js, can you describe how processLoginForm uses authenticateUser and req.session.user to manage login state and keep a user signed in?
+
+User: In processLoginForm, we call authenticateUser to check the email and password. If they are correct, the controller saves the user object inside req.session.user. Because the server remembers this session data, the user stays logged in across different pages until they click log out
+
+Assistant: Good, Ariane — that login flow is solid and shows you understand session persistence. In src/controllers/users.js, how do requireLogin and requireRole('admin') work together to protect routes, and why is that middleware pattern useful for access control?
+
+User: requireLogin checks if the user is logged in first. Then, requireRole('admin') checks if the user has the 'admin' role. This middleware pattern is useful because it creates reusable locks. We can easily protect any route by placing these functions right before the final controller.
+
+Assistant: I reviewed src/views/partials/header.ejs and the role-based checks in src/views/categories.ejs and src/views/dashboard.ejs. How would you use a userRole === 'admin' conditional in the navigation UI to hide admin-only links, and why does that matter in addition to using requireLogin/requireRole on the server?
+
+User: We use <% if (userRole === 'admin') { %> in EJS to wrap admin links so standard users cannot see them. This matters for a clean user experience because it prevents users from clicking links that will reject them. The server middleware provides real security, while the UI conditional provides professional usability.

@@ -5,8 +5,9 @@
     
     <div style="background-color: white; padding: 20px; border-radius: 6px; border: 1px solid #cbd5e1; margin-top: 20px;">
         <h2 style="margin-top: 0; color: #334155;">Welcome Back!</h2>
-        <p style="font-size: 1.1em;"><strong>Name:</strong> <%= name %></p>
-        <p style="font-size: 1.1em;"><strong>Username / Email:</strong> <%= email %></p>
+        <!-- Corregido: Se añade el objeto 'user' antes de las propiedades relacionales -->
+        <p style="font-size: 1.1em;"><strong>Name:</strong> <%= user.name %></p>
+        <p style="font-size: 1.1em;"><strong>Username / Email:</strong> <%= user.email %></p>
     </div>
 
     <% if (userRole === 'admin') { %>
@@ -18,6 +19,36 @@
             </a>
         </div>
     <% } %>
+
+    <!-- MY VOLUNTEER ACTIVITIES DIRECTORY (W06 - Fixed Syntax) -->
+    <section style="margin-top: 30px;">
+        <h2 style="color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;">My Volunteer Projects</h2>
+        
+        <% if (volunteeredProjects && volunteeredProjects.length > 0) { %>
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+                <% volunteeredProjects.forEach(project => { %>
+                    <div style="background-color: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <div>
+                            <h3 style="margin: 0 0 5px 0;">
+                                <a href="/project/<%= project.project_id %>" style="color: #2563eb; text-decoration: none; font-weight: bold;"><%= project.title %></a>
+                            </h3>
+                            <p style="margin: 0; color: #64748b; font-size: 0.9em;"><%= project.description.substring(0, 100) %>...</p>
+                        </div>
+                        <div>
+                            <form action="/project/<%= project.project_id %>/unvolunteer?source=dashboard" method="POST">
+                                <button type="submit" style="background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 6px 12px; border-radius: 4px; font-size: 0.85em; font-weight: bold; cursor: pointer;">
+                                    Leave Project
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <p style="color: #64748b; font-style: italic; margin-top: 15px;">You haven't signed up for any volunteer projects yet. Browse our projects directory to get started!</p>
+        <% } %>
+    </section>
+
 </main>
 
 <%- include('partials/footer') %>

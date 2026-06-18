@@ -1,7 +1,6 @@
-import { getUpcomingProjects, getProjectDetails, createProject, updateProject } from '../models/projects.js';
+import { getAllProjects, getUpcomingProjects, getProjectDetails, createProject, updateProject, isUserVolunteered, addVolunteer, removeVolunteer } from '../models/projects.js';
 import { getAllOrganizations } from '../models/organizations.js'; 
 import { getCategoriesByProjectId } from '../models/categories.js';
-
 
 const NUMBER_OF_UPCOMING_PROJECTS = 5;
 
@@ -16,22 +15,38 @@ const showProjectsPage = async (req, res) => {
     }
 };
 
+// Controller to display a specific project detailed directory (W06 Category Fix Integrated)
 const showProjectDetailsPage = async (req, res) => {
     try {
-        const projectId = req.params.id;
-        const project = await getProjectDetails(projectId);
+        const id = parseInt(req.params.id);
+        const project = await getProjectDetails(id); 
 
         if (!project) {
-            return res.status(404).render('errors/404', { title: 'Page Not Found' });
+            req.flash('error', 'The requested service project does not exist.');
+            return res.redirect('/projects');
         }
 
-        const categories = await getCategoriesByProjectId(projectId);
-        const title = 'Project Details';
+        // 1. Verificar el estado de voluntariado del usuario activo
+        let isVolunteered = false;
+        if (req.session && req.session.user) {
+            isVolunteered = await isUserVolunteered(req.session.user.user_id, id);
+        }
 
-        res.render('project', { title, project, categories }); 
+        // 2. Resolver de forma segura las categorías del proyecto de las semanas anteriores
+        let categories = [];
+        try {
+            categories = await getCategoriesByProjectId(id);
+        } catch (catError) {
+            console.warn("Could not load categories for this project, falling back to empty array", catError);
+        }
+
+        const title = project.title; 
+        
+        // 3. Pasamos de forma relacional el título, proyecto, voluntariado y categorías juntas
+        res.render('project', { title, project, isVolunteered, categories });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error loading project details");
+        res.status(500).send("Server directory rendering error");
     }
 };
 
@@ -99,5 +114,39 @@ const processEditProjectForm = async (req, res) => {
     }
 };
 
+// Action to handle adding a user as a volunteer (POST - W06)
+const handleAddVolunteer = async (req, res) => {
+    try {
+        const projectId = parseInt(req.params.id);
+        const userId = req.session.user.user_id;
 
-export { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, showEditProjectForm, processEditProjectForm };
+        await addVolunteer(userId, projectId);
+        req.flash('success', 'Thank you! You have successfully volunteered for this project.');
+        res.redirect(`/project/${projectId}`);
+    } catch (error) {
+        console.error('Error handling add volunteer:', error);
+        res.status(500).send("Internal server registration error");
+    }
+};
+
+// Action to handle removing a user from a volunteer project (POST - W06)
+const handleRemoveVolunteer = async (req, res) => {
+    try {
+        const projectId = parseInt(req.params.id);
+        const userId = req.session.user.user_id;
+
+        await removeVolunteer(userId, projectId);
+        req.flash('success', 'You have successfully withdrawn from this service project.');
+        
+        // Redirigir dinámicamente según el flujo de origen
+        if (req.query.source === 'dashboard') {
+            return res.redirect('/dashboard');
+        }
+        res.redirect(`/project/${projectId}`);
+    } catch (error) {
+        console.error('Error handling remove volunteer:', error);
+        res.status(500).send("Internal server withdrawal error");
+    }
+};
+
+export { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, showEditProjectForm, processEditProjectForm, handleAddVolunteer, handleRemoveVolunteer };
